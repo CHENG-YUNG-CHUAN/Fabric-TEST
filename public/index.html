@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <style>
+    html, body {
+      height: 100%;
+      width: 100%;
+    }
+    canvas {
+      border: 1px solid #000;
+    }
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+  </style>
+  <title>Save fabric json to server</title>
+</head>
+<body>
+  <canvas id="canvas"></canvas>
+  <button id="save2Server">儲存到伺服器</button>
+  <div id="imgSet">
+    <img src="" alt="" id="serverImg">
+  </div>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/2.4.3/fabric.js"></script>
+  <script>
+  const imgSet = document.getElementById('imgSet')
+  const serverImg = document.getElementById('serverImg')
+  const canvas = new fabric.Canvas('canvas', {
+    width: 500,
+    height: 500,
+    backgroundColor: '#fff'
+  })
+    console.log(canvas)
+    const rect = new fabric.Rect({
+      height: 100,
+      width: 100
+    })
+    canvas.add(rect)
+    var save2Server = document.getElementById('save2Server')
+    save2Server.addEventListener('click', () => {
+      const payload = {
+        data: JSON.stringify(canvas)
+      }
+      const host = '127.0.0.1:8887'
+      fetch(`http://${host}/add`, {
+        method: 'POST',
+        body: JSON.stringify(payload),
+        headers: new Headers({
+          'Content-Type': 'application/json'
+        })
+      })
+        .then(res => res.blob())
+        .then(blob => {
+          serverImg.src = URL.createObjectURL(blob)
+        })
+    })
+  </script>
+</body>
+</html>
