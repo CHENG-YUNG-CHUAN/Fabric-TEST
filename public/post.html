@@ -1,0 +1,125 @@
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+    <title>TEST</title>
+<style class="INLINE_PEN_STYLESHEET_ID">
+    /*For drag sources*/
+    #canvas{
+        border: 1px solid #ffffff;
+    }
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+    body {
+        position: relative;
+    }
+    input[type="file"] {
+        display: none;
+    }
+    /*For drop target*/
+    #defaultImg {
+        link: "/Amongus%20web/black.jpg";
+        display: inline-block;
+        border: 1px solid #d60000;
+        height: 100px;
+        width: 100px;
+    }
+
+    [draggable="true"] {
+        user-select: none;
+        -moz-user-select: none;
+        -webkit-user-select: none;
+        -ms-user-select: none;
+    }
+</style>
+</head>
+<body>
+<div class="options">
+    <button id="imageUploader" >上傳</button>
+    <input type="file" id="file">
+</div>
+拖曳圖片
+<!--<div id="drag-drop-basic">-->
+<!--<div id="imgset" data-role="drag-drop->container">-->
+    <div id="imgset">
+        <img id="defaultImg" src="/Amongus%20web/black.jpg" alt="" draggable="true">
+    </div>
+<!--</div>
+<div class="canvas-container" data-role="drag-drop-container" style="width: 500px; height: 500px; position: relative; user-select: none;">
+    <canvas id="canvas" data-role="drag-drop-container" class="lower-canvas" width="500" height="500" style="position: absolute; width: 500px; height: 500px; left: 0px; top: 0px; touch-action: none; user-select: none;">
+    </canvas>
+   <canvas class="upper-canvas" data-role="drag-drop-container" width="500" height="500" style="position: absolute; width: 500px; height: 500px; left: 0px; top: 0px; touch-action: none; user-select: none; cursor: default;">
+    </canvas>
+</div>
+</div>-->
+<div class="canvas-container" draggable="true" style="width: 500px; height: 500px; position: relative; user-select: none;">
+    <canvas id="canvas" class="lower-canvas" width="500" height="500" style="position: absolute; width: 500px; height: 500px; left: 0px; top: 0px; touch-action: none; user-select: none;">
+    </canvas>
+    <canvas class="upper-canvas " width="500" height="500" style="position: absolute; width: 500px; height: 500px; left: 0px; top: 0px; touch-action: none; user-select: none; cursor: default;">
+    </canvas>
+</div>
+<script id="INLINE_PEN_JS_ID">
+    const canvas = new fabric.Canvas('canvas', {
+        width: 500,
+        height: 500 });
+
+
+    const $ = id => document.getElementById(id);
+    const imageUploader = $('imageUploader');
+    const file = $('file');
+    const imgset = $('imgset');
+    const defaultImg = $('defaultImg');
+    let movingImage;
+    let imgDragOffset = {
+        offsetX: 0,
+        offsetY: 0 };
+
+    function uploadFile(e) {
+        file.click();
+    }
+
+    function saveImg(e) {
+        if (e.target.tagName.toLowerCase() === 'img') {
+            imgDragOffset.offsetX = e.clientX - e.target.offsetLeft;
+            imgDragOffset.offsetY = e.clientY - e.target.offsetTop;
+            movingImage = e.target;
+        }
+    }
+
+    function handleFile() {
+        const fileReader = new FileReader();
+        fileReader.readAsDataURL(this.files[0]);
+        fileReader.onload = e => {
+            // 圖片 base64
+            const dataURL = e.target.result;
+            const img = document.createElement('img');
+            img.draggable = true;
+            img.src = dataURL;
+            img.click = saveImg;
+            imgset.appendChild(img);
+        };
+    }
+
+    function dropImg(e) {
+        const { offsetX, offsetY } = e.e;
+        const image = new fabric.Image(movingImage, {
+            width: movingImage.naturalWidth,
+            height: movingImage.naturalHeight,
+            scaleX: 100 / movingImage.naturalWidth,
+            scaleY: 100 / movingImage.naturalHeight,
+            top: offsetY - imgDragOffset.offsetY,
+            left: offsetX - imgDragOffset.offsetX }
+            );
+        canvas.add(image);
+    }
+
+    imageUploader.addEventListener('click', uploadFile, true);
+    file.addEventListener('change', handleFile);
+    canvas.on('drop', dropImg);
+    // defaultImg.addEventListener('mousedown', saveImg)
+    imgset.addEventListener('mousedown', saveImg);
+</script>
+</body>
+</html>

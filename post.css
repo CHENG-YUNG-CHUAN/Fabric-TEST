@@ -1,0 +1,30 @@
+canvas {
+    border: 1px solid #1e3bcd;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+body {
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    background-color: #f0f0f0;
+}
+input[type="file"] {
+    display: none;
+}
+img {
+    display: inline-block;
+    border: 1px solid #ffffff;
+    height: 100px;
+    width: 100px;
+}
+[draggable] {
+    -moz-user-select: none;
+    -webkit-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    -khtml-user-drag: element;
+    -webkit-user-drag: element;
+    cursor: move;
+}

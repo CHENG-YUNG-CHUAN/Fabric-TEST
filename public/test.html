@@ -1,0 +1,236 @@
+
+<html>
+<head>
+<meta charset="UTF-8">
+    <title>HTML SCSS JSResult
+        EDIT ON</title>
+    <script>
+        window.console = window.console || function(t) {};
+    </script>
+
+    <script>
+        if (document.location.search.match(/type=embed/gi)) {
+            window.parent.postMessage("resize", "*");
+        }
+    </script>
+
+<style>
+    [draggable="true"] {
+        /*
+       To prevent user selecting inside the drag source
+      */
+        user-select: none;
+        -moz-user-select: none;
+        -webkit-user-select: none;
+        -ms-user-select: none;
+    }
+
+    #drag-drop-basic {
+        display: flex;
+    }
+    #drag-drop-basic #source-container {
+        height: 400px;
+        border: 2px solid #CCC;
+        flex: 1;
+    }
+    #drag-drop-basic #target-container {
+        height: 400px;
+        border: 2px solid #CCC;
+        flex: 1;
+    }
+    #drag-drop-basic #defaultImg /* #drag-source */ {
+/*        width: 100px;
+        height: 100px;
+        border-radius: 50%;
+        background-color: #4682b4;*/
+        display: inline-block;
+        border: 1px solid #d60000;
+        height: 100px;
+        width: 100px;
+
+    }
+    .dragging {
+        opacity: .25;
+    }
+
+    .hover {
+        background-color: rgba(0, 191, 165, 0.04);
+    }
+    canvas {
+        border: 1px solid #000;
+    }
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+    img {
+        display: inline-block;
+        border: 1px solid #63bf12;
+        height: 100px;
+        width: 100px;
+    }
+    input[type="file"] {
+        display: none;
+    }
+    body {
+        position: relative;
+    }
+
+</style>
+</head>
+
+<body>
+<div class="options">
+    <button id="imageUploader" >上傳</button>
+    <input type="file" id="file">
+</div>
+拖曳圖片
+
+<div id="drag-drop-basic">
+    <div id="imgset">
+        <img src="../Amongus%20web/brown.jpg" alt="" draggable="true">
+    </div>
+    <div id="source-container" data-role="drag-drop-container">
+        <img id="defaultImg" src="../Amongus%20web/black.jpg" alt="" draggable="true">
+    </div>
+    <div id="target-container" data-role="drag-drop-container"></div>
+
+</div>
+
+<script>
+    window.console = window.console || function(t) {};
+</script>
+<script>
+    if (document.location.search.match(/type=embed/gi)) {
+        window.parent.postMessage("resize", "*");
+    }
+</script>
+<script>
+    let sourceContainerId = "";
+    // Allow multiple draggable items
+    let dragSources = document.querySelectorAll('[draggable="true"]');
+    dragSources.forEach(dragSource => {
+        dragSource.addEventListener("dragstart", dragStart);
+        dragSource.addEventListener("dragend", dragEnd);
+    });
+
+    function dragStart(e) {
+        this.classList.add("dragging");
+        e.dataTransfer.setData("text/plain", e.target.id);
+        sourceContainerId = this.parentElement.id;
+    }
+
+    function dragEnd(e) {
+        this.classList.remove("dragging");
+    }
+
+    // Allow multiple dropped targets
+    let dropTargets = document.querySelectorAll(
+        '[data-role="drag-drop-container"]'
+    );
+    dropTargets.forEach(dropTarget => {
+        dropTarget.addEventListener("drop", dropped);
+        dropTarget.addEventListener("dragenter", cancelDefault);
+        dropTarget.addEventListener("dragover", dragOver);
+        dropTarget.addEventListener("dragleave", dragLeave);
+    });
+
+    function dropped(e) {
+        // execute function only when target container is different from source container
+        if (this.id !== sourceContainerId) {
+            cancelDefault(e);
+            let id = e.dataTransfer.getData("text/plain");
+            e.target.appendChild(document.querySelector("#" + id));
+            this.classList.remove("hover");
+        }
+    }
+
+    function dragOver(e) {
+        cancelDefault(e);
+        this.classList.add("hover");
+    }
+
+    function dragLeave(e) {
+        this.classList.remove("hover");
+    }
+
+    function cancelDefault(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        return false;
+    }
+    const $ = (id) => document.getElementById(id)
+    const file = $('file')
+    file.addEventListener('change', handleFile)
+    imageUploader.addEventListener('click', uploadFile, true)
+    function uploadFile () {
+        file.click()
+    }
+    function handleFile () {
+        const fileReader = new FileReader();
+        fileReader.readAsDataURL(this.files[0])
+        fileReader.onload = (e) => {
+            // 圖片 base64
+            const dataURL = e.target.result
+            const img = document.createElement('img')
+            img.draggable = true
+            img.src = dataURL
+            img.click = saveImg
+            imgset.appendChild(img)
+        }
+    }
+    function saveImg (e) {
+        if (e.target.tagName.toLowerCase() === 'img') {
+            imgDragOffset.offsetX = e.clientX - e.target.offsetLeft
+            imgDragOffset.offsetY = e.clientY - e.target.offsetTop
+            movingImage = e.target
+        }
+    }
+    /*const $ = (id) => document.getElementById(id)
+    const imageUploader = $('imageUploader')
+    const file = $('file')
+    const imgset = $('imgset')
+    const defaultImg = $('defaultImg')
+    let movingImage
+    let imgDragOffset = {
+        offsetX: 0,
+        offsetY: 0
+    }
+
+    function saveImg (e) {
+        if( e.target.tagName.toLowerCase() === 'img' ){
+            imgDragOffset.offsetX = e.clientX - e.target.offsetLeft
+            imgDragOffset.offsetY = e.clientY - e.target.offsetTop
+            movingImage = e.target
+        }
+
+    function uploadFile (e) {
+        file.click()
+    }
+
+    function dropImg(e) {
+        const { offsetX, offsetY } = e.e;
+        const image = new fabric.Image(movingImage, {
+            width: movingImage.naturalWidth,
+            height: movingImage.naturalHeight,
+            scaleX: 100 / movingImage.naturalWidth,
+            scaleY: 100 / movingImage.naturalHeight,
+            top: offsetY - imgDragOffset.offsetY,
+            left: offsetX - imgDragOffset.offsetX });
+
+        canvas.add(image);
+    }
+
+    imageUploader.addEventListener('click', uploadFile, true)
+    file.addEventListener('change', handleFile)
+    canvas.on('drop', dropImg)
+
+    // defaultImg.addEventListener('mousedown', saveImg)
+    imgset.addEventListener('mousedown', saveImg)*/
+
+</script>
+
+</body>
+
+</html>
