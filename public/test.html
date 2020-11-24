@@ -38,7 +38,7 @@
             border: 2px solid #CCC;
             flex: 1;
         }
-        #drag-drop-basic #defaultImg /* #drag-source */ {
+        #drag-drop-basic #defaultImg #newing /* #drag-source */ {
             /*        width: 100px;
                     height: 100px;
                     border-radius: 50%;
@@ -57,7 +57,11 @@
             background-color: rgba(0, 191, 165, 0.04);
         }
         canvas {
-            border: 1px solid #000;
+ /*           border: 1px solid #000;*/
+            display: inline-block;
+            border: 1px solid #d60000;
+            height: 100px;
+            width: 100px;
         }
         * {
             margin: 0;
@@ -89,7 +93,8 @@
 
 <div id="drag-drop-basic">
     <div id="imgset">
-        <img src="../Amongus%20web/brown.jpg" alt="" draggable="true">
+        <img id="img" src="../Amongus%20web/brown.jpg" alt="" draggable="true">
+        <canvas id="newing" draggable="true"></canvas>
     </div>
     <div id="source-container" data-role="drag-drop-container">
         <img id="defaultImg" src="../Amongus%20web/black.jpg" alt="" draggable="true">
@@ -97,7 +102,7 @@
     <div id="target-container" data-role="drag-drop-container"></div>
 
 </div>
-123
+
 <script>
     window.console = window.console || function(t) {};
 </script>
@@ -148,6 +153,7 @@
 
     function dragOver(e) {
         cancelDefault(e);
+        this.classList.remove("newing");
         this.classList.add("hover");
     }
 
@@ -162,8 +168,10 @@
     }
     const $ = (id) => document.getElementById(id)
     const file = $('file')
+    const imgage = $('image')
     file.addEventListener('change', handleFile)
     imageUploader.addEventListener('click', uploadFile, true)
+
     function uploadFile () {
         file.click()
     }
@@ -174,13 +182,19 @@
             // 圖片 base64
             const dataURL = e.target.result
             const img = document.createElement('img')
+            const canvas = document.createElement('canvas')
+            const    ctx = canvas.getContext('2d');
+            img.id= "newing"
             img.draggable = true
             img.src = dataURL
             img.click = saveImg
             imgset.appendChild(img)
+            img.onload = function(){
+                ctx.drawImage(img,50,50,50,50);
+            };
         }
     }
-    123
+
     function saveImg (e) {
         if (e.target.tagName.toLowerCase() === 'img') {
             imgDragOffset.offsetX = e.clientX - e.target.offsetLeft
