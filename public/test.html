@@ -1,18 +1,9 @@
 
-<html>
+
 <head>
     <meta charset="UTF-8">
     <title>HTML SCSS JSResult
         EDIT ON</title>
-    <script>
-        window.console = window.console || function(t) {};
-    </script>
-
-    <script>
-        if (document.location.search.match(/type=embed/gi)) {
-            window.parent.postMessage("resize", "*");
-        }
-    </script>
 
     <style>
         [draggable="true"] {
@@ -38,27 +29,20 @@
             border: 2px solid #CCC;
             flex: 1;
         }
-        #drag-drop-basic #defaultImg #newing /* #drag-source */ {
-            /*        width: 100px;
-                    height: 100px;
-                    border-radius: 50%;
-                    background-color: #4682b4;*/
+        #drag-drop-basic  #drag-source  {
             display: inline-block;
             border: 1px solid #d60000;
             height: 100px;
             width: 100px;
-
         }
         .dragging {
             opacity: .25;
         }
-
         .hover {
             background-color: rgba(0, 191, 165, 0.04);
         }
         canvas {
- /*           border: 1px solid #000;*/
-            display: inline-block;
+            display: block;
             border: 1px solid #d60000;
             height: 100px;
             width: 100px;
@@ -68,12 +52,12 @@
             padding: 0;
             box-sizing: border-box;
         }
-        img {
+/*       img {
             display: inline-block;
             border: 1px solid #63bf12;
             height: 100px;
             width: 100px;
-        }
+        }*/
         input[type="file"] {
             display: none;
         }
@@ -91,26 +75,27 @@
 </div>
 拖曳圖片
 
-<div id="drag-drop-basic">
-    <div id="imgset">
+<div id="drag-drop-basic" data-role="drag-drop-container">
+    <div id="drag-source" draggable="true"></div>
         <img id="img" src="../Amongus%20web/brown.jpg" alt="" draggable="true">
-        <canvas id="newing" draggable="true"></canvas>
-    </div>
+<!--        <canvas id="Canvas" draggable="true" width="250" height="300" style="border:1px solid #d3d3d3;">
+            不支持 HTML5 canvas 。
+        </canvas>-->
+
     <div id="source-container" data-role="drag-drop-container">
         <img id="defaultImg" src="../Amongus%20web/black.jpg" alt="" draggable="true">
     </div>
     <div id="target-container" data-role="drag-drop-container"></div>
-
 </div>
 
-<script>
+<!--<script>
     window.console = window.console || function(t) {};
 </script>
 <script>
     if (document.location.search.match(/type=embed/gi)) {
         window.parent.postMessage("resize", "*");
     }
-</script>
+</script>-->
 <script>
     let sourceContainerId = "";
     // Allow multiple draggable items
@@ -146,14 +131,13 @@
         if (this.id !== sourceContainerId) {
             cancelDefault(e);
             let id = e.dataTransfer.getData("text/plain");
-            e.target.appendChild(document.querySelector("#" + id));
+            e.target.appendChild(document.querySelector( "#" +id));
             this.classList.remove("hover");
         }
     }
 
     function dragOver(e) {
         cancelDefault(e);
-        this.classList.remove("newing");
         this.classList.add("hover");
     }
 
@@ -166,11 +150,16 @@
         e.stopPropagation();
         return false;
     }
-    const $ = (id) => document.getElementById(id)
+
+
+
+
+    /*const $ = (id) => document.getElementById(id)
     const file = $('file')
     const imgage = $('image')
     file.addEventListener('change', handleFile)
     imageUploader.addEventListener('click', uploadFile, true)
+
 
     function uploadFile () {
         file.click()
@@ -181,19 +170,30 @@
         fileReader.onload = (e) => {
             // 圖片 base64
             const dataURL = e.target.result
-            const img = document.createElement('img')
-            const canvas = document.createElement('canvas')
-            const    ctx = canvas.getContext('2d');
-            img.id= "newing"
+            const i = document.createElement("img")
+            i.id= "oh"
+/!*            const canvas = document.createElement('canvas')
+            const    context = canvas.getContext('2d')*!/
+      /!*      img.id= "newing"
             img.draggable = true
-            img.src = dataURL
-            img.click = saveImg
-            imgset.appendChild(img)
-            img.onload = function(){
-                ctx.drawImage(img,50,50,50,50);
-            };
+            img.src = dataURL*!/
+/!*            img.click = function(){
+                context.drawImage(img,100,100,100,100);
+            };*!/
+            i.click =saveImg
+            const c=document.getElementById("myCanvas");
+            const ctx=c.getContext("2d");
+/!*            const io =document.getElementById("oh")*!/
+/!*            var img=document.getElementById("img");*!/
+            i.onload = function() {
+                ctx.drawImage(i,50,50,50,50);
+            }
+            imgset.appendChild(i)
+/!*            context.drawImage(img, 100, 100, 100, 100)*!/
         }
     }
+
+
 
     function saveImg (e) {
         if (e.target.tagName.toLowerCase() === 'img') {
@@ -201,7 +201,20 @@
             imgDragOffset.offsetY = e.clientY - e.target.offsetTop
             movingImage = e.target
         }
-    }
+        /!*w = w || 100;
+        h = h || 100;
+        const img = document.createElement("img"); //建立臨時圖片
+        img.src = i;
+        const canvas = document.createElement("canvas"); //建立臨時畫布
+        canvas.width = w;
+        canvas.height = h;
+        const ctx = canvas.getContext("2d");
+        img.onload = function() {   //監聽到圖片載入結束，再壓縮圖片！
+            ctx.drawImage(img, 0, 0, w, h); //傳入臨時圖片
+            if(callback && typeof callback == "function")
+                return callback(canvas.toDataURL("image/jpeg", 1)); //第二個引數是質量
+        };*!/
+    }*/
     /*const $ = (id) => document.getElementById(id)
     const imageUploader = $('imageUploader')
     const file = $('file')
@@ -246,6 +259,57 @@
 
 </script>
 
+
+<script>
+
+    const URL = window.webkitURL || window.URL;
+
+    window.onload = function () {
+        const imageUploader = document.getElementById('imageUploader');
+        const file = document.getElementById('file');
+        file.addEventListener('change', handleFiles,false);
+        imageUploader.addEventListener('click', uploadFile, true);
+    }
+
+    function uploadFile() {
+        file.click()
+    }
+    function handleFiles(e) {
+
+        // Get the FileList object from the file select event
+        const files = e.target.files;
+
+        // Check if there are files in the FileList
+        if(files.length === 0)
+        {
+            return;
+        }
+
+        // For this example we only want one image. We'll take the first.
+        const file = files[0];
+
+        // Check that the file is an image
+        if(file.type !== '' && !file.type.match('image.*'))
+        {
+            return;}
+        const canvas = document.createElement('canvas');
+        canvas.id= "drag-source";
+        canvas.draggable=true;
+        const ctx = canvas.getContext("2d");
+        const url = URL.createObjectURL(e.target.files[0]);
+        const img = new Image();
+        img.src = url;
+        const imgW = img.width;
+        const imgH = img.height;
+        const imgX = (ctx.canvas.width * .5) - (imgW * .5);
+        const imgY = (ctx.canvas.height * .5) - (imgH * .5);
+        img.onload = function () {
+            /*ctx.clearRect(imgX, imgY, imgW, imgH);*/
+            ctx.drawImage(img,0,0);
+        }
+        document.body.append(canvas)
+        document.getElementById('drag-source').appendChild(canvas);
+    }
+</script>
 </body>
 
-</html>
